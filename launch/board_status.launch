@@ -1,0 +1,31 @@
+<launch>
+  <node pkg="board_state" type="main.py" name="board_state" output="screen"/>
+
+  <!-- Initial tokens locations -->
+  <rosparam param="initial_board">
+    {'1': '0', "2": '0', "3": '0', "4": '0', "5": '0',
+                   "6": '0', "7": '0', "8": '0', "9": '0', "10": '0',
+                   "11": '0', "12": '0', "13": '0', "14": '0', "15": '0',
+                   "16": '1', "17": '2', "18": '3', "19": '4', "20": '5'}
+  </rosparam>
+  <!-- Final tokens locations -->
+  <rosparam param="solution_board">
+    {"1": '1', "2": '2', "3": '3', "4": '4', "5": '5',
+                     "6": '0', "7": '0', "8": '0', "9": '0', "10": '0',
+                     "11": '0', "12": '0', "13": '0', "14": '0', "15": '0',
+                     "16": '0', "17": '0', "18": '0', "19": '0', "20": '0'}
+  </rosparam>
+
+  <!-- Tokens to play -->
+  <rosparam param="tokens_number">
+    [ '1', '2', '3', '4', '5']
+  </rosparam>
+
+  <!-- RFID IDs for the board -->
+  <rosparam param="rfid_id">
+    [ "4117136895", "2509992703", "88436991",  "1972340735",  "2504166399"]
+  </rosparam>
+
+
+
+</launch>
