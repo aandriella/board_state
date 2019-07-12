@@ -13,6 +13,8 @@ import csv
 import time
 import rospy
 from std_msgs.msg import String, Int8
+import pygame
+
 
 from iri_rfid_board_scanner.msg import BoardIds
 from board_state.msg import StrList
@@ -40,19 +42,25 @@ class GameFramework():
 
 
     initial_board_from_launch = rospy.get_param('/initial_board')
-    solution_board_from_launch = rospy.get_param('/solution_board')
 
     self.initial_board = {int(k): str(v) for k, v in initial_board_from_launch.items()}
-    self.solution_board = {int(k): str(v) for k, v in solution_board_from_launch.items()}
+
+  def play_sound(self, file_path, sleep):
+    '''
+    play a sound using pygame
+    '''
+    pygame.mixer.init()
+    # pygame.mixer.music.load(parent_dir_of_file+'/sounds/wrong_move_trim.mp3')
+    pygame.mixer.music.load(parent_dir_of_file + file_path)
+    pygame.mixer.music.play(0)
+    time.sleep(sleep)
+
 
   def get_tokens_id(self):
     return self.tokens
 
   def get_initial_board(self):
     return self.initial_board
-
-  def get_solution_board(self):
-    return self.solution_board
 
   #get value from the topic
   def get_electro_board_ids(self):
@@ -73,7 +81,7 @@ class GameFramework():
     '''
     from_ids_to_tokens = dict()
     for i in range(len(ids)):
-      from_ids_to_tokens[ids[i]] = tokens[i]
+      from_ids_to_tokens[ids[i]] = "v"+tokens[i]
     return from_ids_to_tokens
 
 
@@ -86,7 +94,7 @@ class GameFramework():
     for i in range(len(msg)):
         if msg[i] == 0:
           # i+1 because the id start
-          self.electro_board_with_tokens[i+1] = '0'
+          self.electro_board_with_tokens[i+1] = 'v0'
         else:
           self.electro_board_with_tokens[i+1] = from_ids_to_tokens_dict.get(msg[i])
     return self.electro_board_with_tokens
@@ -108,7 +116,7 @@ class GameFramework():
         z = new_board_state.get(x1) == old_board_state.get(x1)
         if not z:
             #print('location', x1)
-            if (new_board_state.get(x1))!='0':
+            if (new_board_state.get(x1))!='v0':
               token = (new_board_state.get(x1))
             #check where the token is in the new configuration
               prev_location = self.get_token_location_from_board_state(old_board_state, token)
@@ -134,11 +142,11 @@ class GameFramework():
 
     for loc, token in self.current_board.items():
       if token == (token_id):
-        self.current_board[loc] = '0'
+        self.current_board[loc] = 'v0'
 
     for key in self.current_board.keys():
       if location == key:
-        self.current_board[key] = (token_id)
+        self.current_board[key] = "v"+(token_id)
       else:
         pass
 
@@ -154,25 +162,38 @@ def main():
 
 
   m = GameFramework()
-  initial_board = m.get_initial_board()
-  current_board = initial_board.copy()
+  #initial_board = m.get_initial_board()
+  #current_board = initial_board.copy()
   ###############################################################
 
   pub = rospy.Publisher('board_status', StrList, queue_size=10)
   rospy.init_node('big_hero', anonymous=True)
   rate = rospy.Rate(10)  # 10hz
+  event_counter = 0
+
+  rospy.sleep(2)
+  current_board = m.get_electro_board().copy()
+
   while not rospy.is_shutdown():
     detected_board = m.get_electro_board()
     detected_movement = m.detect_move(current_board, detected_board)
 
     if (len(detected_movement)) >= 1 and detected_movement[0][0] != None:
+      #check if 10 token have been detected
+
+
       board_state_msg = detected_board.values()
+      m.play_sound("/sounds/pull-out.ogg", 0.2)
       pub.publish(board_state_msg)
+      event_counter += 1
       rate.sleep()
       current_board = detected_board.copy()
-      print("Movement detected")
+      print("***********************************")
+      print("Board state "+str(board_state_msg))
+      print("Event counter "+str(event_counter))
+      print("***********************************")
     else:
-      print("No movement detected")
+      pass
 
     # a.data = [3250, 2682, 6832, 2296, 8865, 7796, 6955, 8236]
     # pub.publish(a)
