@@ -278,7 +278,7 @@ def main():
     elif (token_picked):
       placed_token, moved_back = board_game.detect_placed_token(board_game.picked_token, detected_board)
       if len(placed_token)>0:
-        board_game.play_sound("/sounds/pull-out.ogg", 0.2)
+        board_game.play_sound("/sounds/pull-out.ogg", 0.1)
         msg_move.detected_token = placed_token
         msg_move.picked = False
         msg_move.placed = True
