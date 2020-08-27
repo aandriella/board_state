@@ -126,7 +126,7 @@ class BoardGame():
         # if the location now is empty check where it was before
         token_id = previous_board.get(k)
         location = k
-        picked_token = (str(token_id), str(location))
+        picked_token = (str(token_id), str(location), str(0))
     return picked_token
 
   def detect_placed_token(self, picked_token, current_board):
@@ -136,7 +136,7 @@ class BoardGame():
   	  picked_token: the token the user has picked
   	  current_board: the status of the board at time t
   	'''
-      token_id, loc_from = picked_token
+      token_id, loc_from, _ = picked_token
       move_it_back = False
       placed_token = ()
       for key, val in current_board.items():
