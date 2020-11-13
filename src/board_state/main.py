@@ -243,7 +243,6 @@ def main():
     msg_board.data = detected_board.values()
     pub_board_status.publish(msg_board)
 
-
     #check if a token has been picked
     picked_token = board_game.detect_grasped_token(current_board, detected_board)
 
@@ -257,7 +256,7 @@ def main():
       msg_move.detected_token = picked_token
       msg_move.picked = True
       #detected_board.values()
-      board_game.play_sound("/sounds/pull-out.ogg", 0.2)
+      #board_game.play_sound("/sounds/pull-out.ogg", 0.2)
       pub_move.publish(msg_move)
       event_counter += 1
       rate.sleep()
@@ -278,7 +277,7 @@ def main():
     elif (token_picked):
       placed_token, moved_back = board_game.detect_placed_token(board_game.picked_token, detected_board)
       if len(placed_token)>0:
-        board_game.play_sound("/sounds/pull-out.ogg", 0.1)
+        #board_game.play_sound("/sounds/pull-out.ogg", 0.1)
         msg_move.detected_token = placed_token
         msg_move.picked = False
         msg_move.placed = True
