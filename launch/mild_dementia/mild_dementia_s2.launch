@@ -1,0 +1,14 @@
+<launch>
+  <node pkg="board_state" type="main.py" name="board_state" output="screen"/>
+
+  <!-- Initial tokens locations -->
+  <rosparam param="tokens_number">
+  ['715', '671',  '667',  '661',  '619' ,  '668' , '694' , '268' , '710'  ,'728'  ,'593',  '587' , '630' , '117'  ,'133']
+  </rosparam>
+
+  <rosparam param="rfid_id">
+  3581181951 3306978559 894864895 2247134207 1439793151 3315042303 1972340735 2768466943 2509992703 2777051135 4117136895 3852242175 88436991 2504166399 356806911
+  </rosparam>
+
+
+</launch>
